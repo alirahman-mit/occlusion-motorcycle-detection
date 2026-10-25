@@ -2,7 +2,7 @@
 
 **Does Synthetic Occlusion Transfer to Real Occlusion?**
 
-Kukuh Agung Tri Pamuji, Semeia Rouli Sinaga, Ali Rahman Bayanaka, Wijdanadam Rafifilmi Nadarosula, Alifia Azzahra — Telkom University
+Kukuh Agung Tri Pamuji, Semeia Rouli Sinaga, Ali Rahman Bayanaka, Wijdanadam Rafifilmi Nadarosula (Mentor), Alifia Azzahra (Mentor) — Telkom University
 
 We train YOLO11s on UVH-26 traffic-camera images with three training configurations (C0 standard, C1 targeted random erasing, C2 vehicle-crop pasting) and two post-processing options (hard NMS IoU 0.7, Soft-NMS σ = 0.3). We test them on paired synthetic occlusion (L0–L3, 0–80% box cover) and on 1,476 naturally occluded targets labeled clean / light / heavy.
 
