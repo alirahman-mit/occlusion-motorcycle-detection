@@ -1,64 +1,98 @@
-# Occlusion-Aware Training and Post-Processing for Motorized Two-Wheeler Detection: Does Synthetic Occlusion Transfer to Real Occlusion?
+# Occlusion-Aware Training and Post-Processing for Motorized Two-Wheeler Detection
 
 **Does Synthetic Occlusion Transfer to Real Occlusion?**
 
-Kukuh Agung Tri Pamuji, Semeia Rouli Sinaga, Ali Rahman Bayanaka, Wijdanadam Rafifilmi Nadarosula (Mentor), Alifia Azzahra (Mentor) — Telkom University
+Kukuh Agung Tri Pamuji, Semeia Rouli Sinaga, Ali Rahman Bayanaka — Telkom University
+Mentors: Wijdanadam Rafifilmi Nadarosula, Alifia Azzahra
 
-We train YOLO11s on UVH-26 traffic-camera images with three training configurations (C0 standard, C1 targeted random erasing, C2 vehicle-crop pasting) and two post-processing options (hard NMS IoU 0.7, Soft-NMS σ = 0.3). We test them on paired synthetic occlusion (L0–L3, 0–80% box cover) and on 1,476 naturally occluded targets labeled clean / light / heavy.
+We train YOLO11s on UVH-26 traffic-camera images with three training configurations and two post-processing options:
 
-## Main result (AP50, mean of 3 seeds, hard NMS 0.7)
+- **C0** standard training
+- **C1** targeted random erasing
+- **C2** vehicle-crop pasting
+- Post-processing: hard NMS (IoU 0.7) or Soft-NMS (σ = 0.3)
+
+The models are tested on paired synthetic occlusion (L0–L3, 0–80% box cover) and on 1,476 naturally occluded targets labeled clean / light / heavy.
+
+## Main result
+
+AP50, mean of 3 seeds, hard NMS 0.7.
 
 | Set | C0 | C1 | C2 |
-|---|---|---|---|
+|:--|--:|--:|--:|
 | Synthetic L1 (20–40%) | 53.1 | 53.7 | 73.5 |
 | Synthetic L2 (40–60%) | 14.4 | 16.3 | 52.4 |
 | Synthetic L3 (60–80%) | 1.7 | 2.0 | 28.6 |
 | Natural light | 75.4 | 76.7 | 74.9 |
 | Natural heavy | 58.2 | 59.0 | 58.4 |
 
-C2 gains +20.3 / +38.0 / +26.9 points on synthetic cover (95% CI above zero), but its natural light / heavy changes (−0.45 / +0.26) have intervals that include zero. Synthetic gains do not establish transfer to natural occlusion. Full tables: `reports/Laporan_Run_Final.md`.
+C2 gains +20.3 / +38.0 / +26.9 points on synthetic cover, with 95% CIs above zero. Its changes on natural light / heavy occlusion (−0.45 / +0.26) have intervals that include zero. **Synthetic gains do not establish transfer to natural occlusion.**
 
 ## Repository layout
 
-```
 notebooks/
-  mbc-collab_kaggle.ipynb   final Kaggle run with outputs (long logs trimmed)
-  mbc-colab_colab.ipynb     same pipeline adapted for Google Colab + Drive
+mbc-collab_kaggle.ipynb final Kaggle run with outputs (long logs trimmed)
+mbc-colab_colab.ipynb same pipeline adapted for Google Colab + Drive
 src/
-  occlusion_lib.py          occlusion generator, NMS post-processing, evaluator, bootstrap
-  paket_tim_cell.py         notebook cell that packs checkpoints, raw predictions, panels, sha256 manifest
+occlusion_lib.py occlusion generator, NMS post-processing, evaluator, bootstrap
+paket_tim_cell.py cell that packs checkpoints, raw predictions, panels, sha256 manifest
 reports/
-  Laporan_Run_Final.md      full results report (Indonesian)
-  laporan_hasil.html        report with figures
-  tables/                   all result tables as CSV, plus per-epoch training log of the 9 runs
-  figures/                  figures exported from the notebook
+Laporan_Run_Final.md full results report (Indonesian)
+laporan_hasil.html report with figures
+tables/ all result tables as CSV + per-epoch training logs of the 9 runs
+figures/ figures exported from the notebook
 labels/
-  aturan_penandaan.json     labeling rules (clean / light / heavy / discard)
-  label_pembanding_AI_claude.csv   150-target AI comparison labels (NOT a human annotator)
+aturan_penandaan.json labeling rules (clean / light / heavy / discard)
+label_pembanding_AI_claude.csv 150-target AI comparison labels (NOT a human annotator)
 tools/
-  penandaan-oklusi-motor.html      offline labeling tool for a second human annotator
-```
+penandaan-oklusi-motor.html offline labeling tool for a second human annotator
+
 
 ## Reproduce
 
 1. Open `notebooks/mbc-collab_kaggle.ipynb` on Kaggle (GPU T4, Internet on, secret `HF_TOKEN`).
 2. Attach the natural-occlusion label CSV (`real_tags (1).csv`) as a Kaggle dataset and set `LABEL_KUKUH_DIR` in the config cell.
-3. **Save Version → Save & Run All** (about 8–9 hours). Training is deterministic: six Kaggle runs gave identical per-epoch logs and tables.
+3. Run **Save Version → Save & Run All** (about 8–9 hours).
 
-Environment: Python 3.13.15, PyTorch 2.11.0+cu128, Ultralytics 8.4.175, Tesla T4. Colab (different CUDA build) gives slightly different numbers.
+Training is deterministic: six Kaggle runs gave identical per-epoch logs and tables.
 
-# Laporan Run Final — mbc-collab (Kaggle, 25 Oktober 2026)
+Environment: Python 3.13.15, PyTorch 2.11.0+cu128, Ultralytics 8.4.175, Tesla T4. Colab uses a different CUDA build and gives slightly different numbers.
 
-Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin dari output sel, tidak dihitung ulang.
+## Data
 
-## Ringkasan
+| Dataset | Link | Notes |
+|:--|:--|:--|
+| UVH-26 (Hugging Face) | https://huggingface.co/datasets/iisc-aim/UVH-26 | Branch `v1.0`, majority-vote (MV) annotations, CC BY 4.0 |
+| UVH-26 dataset card | https://huggingface.co/datasets/iisc-aim/UVH-26/blob/v1.0/README.md | Category definitions (Two-wheeler = category 8) |
+| UVH-26 paper (arXiv) | https://arxiv.org/abs/2511.02563 | Sharma et al., 2025, Indian Institute of Science |
+| Natural-occlusion labels (Kaggle) | https://www.kaggle.com/datasets/alirahmanbayanaka/manual-penanda2 | `real_tags (1).csv` (Kukuh's labels) + `label_penanda2 (1).csv` (AI comparison). Accessible only if the dataset is public or shared |
+
+The class used is Two-wheeler (category 8): motorcycles and seated motor scooters, including the rider. Standing kick-scooters are not part of this class.
+
+## Not in this repository
+
+Model checkpoints (`best.pt`), raw predictions, matching files and comparison panels are too large for git. They come from the final run as `PAKET_TIM_v6_e60_ulang.zip` (571 MB) and should be shared through GitHub Releases, Git LFS or a Kaggle dataset.
+
+## Limitations
+
+- Natural-occlusion labels come from one human annotator.
+- The 150-target comparison (κ = 0.283) was rated by an AI model. It is not human inter-annotator agreement.
+- Results cover one detector, one city, daytime images, and targets of 32 px and larger.
+
+---
+
+## Laporan lengkap run final (Bahasa Indonesia)
+
+Run `mbc-collab` di Kaggle, 25 Oktober 2026. Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin dari output sel, tidak dihitung ulang.
+
+### Ringkasan
 
 - **Hasil identik dengan run paper.** Semua tabel (AP utama, ablasi bootstrap, RQ3, generator silang, evaluasi semua motor, cahaya, kategori 12c, kappa) sama persis dengan run paper (`mbc-final-keterima`) dan run ulang 24 Okt. Ini kali keenam hasil yang sama keluar di Kaggle.
 - **Training lengkap.** 9 run utama dilatih dari awal (`resume=False`), masing-masing 60 epoch, sekitar 33 menit per run.
-- **Paket tim lengkap.** `PAKET_TIM_v6_e60_ulang.zip` (571 MB, 107 file): 9 best.pt, 9 raw_preds, 7 panel, matching, prediksi generator silang, README, manifest sha256.
+- **Paket tim lengkap.** `PAKET_TIM_v6_e60_ulang.zip` (571 MB, 107 file) berisi 9 best.pt, 9 raw_preds, 7 panel, matching, prediksi generator silang, README, dan manifest sha256.
 - **Catatan:** 3 run augmentasi cahaya (bagian 10b) tidak dilatih ulang di sesi ini (`lewati (sudah selesai)`), karena bobotnya masih tersimpan dari sesi Kaggle sebelumnya di folder yang sama. Hasil cahayanya tetap identik dengan run paper.
 
-## 1. Identitas run
+### 1. Identitas run
 
 - Kaggle, Tesla T4, Python 3.13.15, torch 2.11.0+cu128, Ultralytics 8.4.175
 - Notebook `mbc-collab`, EXP_TAG `_v6_e60_ulang`, mode PENUH: YOLO11s, imgsz 640, 60 epoch, patience 15, seed 0/1/2, deterministic=True
@@ -67,7 +101,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 - Label nyata: `real_tags (1).csv` dari Kukuh, 1623 motor (cocok 100%) → 1476 target final (587 / 589 / 300), 147 dibuang
 - NMS dipilih di validasi: N1 = hard IoU 0.7 (sama dengan default), N2 = Soft-NMS σ 0.3
 
-## 2. Training
+### 2. Training
 
 | run | menit | epoch | resume | status |
 |:--|--:|--:|:--|:--|
@@ -81,7 +115,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | C1_s1 | 32.8 | 60 | tidak | selesai |
 | C1_s2 | 32.8 | 60 | tidak | selesai |
 
-## 3. Data
+### 3. Data
 
 | split | n_img | n_motor |
 |:--|--:|--:|
@@ -95,7 +129,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | ringan | 589 | 362 | 39.9 | 0 | 535 | 20 | 34 |
 | berat | 300 | 191 | 20.3 | 0 | 269 | 18 | 13 |
 
-## 4. Hasil utama AP50 (×100, rata-rata ± sd 3 seed)
+### 4. Hasil utama AP50 (×100, rata-rata ± sd 3 seed)
 
 | cfg | NMS | L0 | L1 | L2 | L3 | nyata_bersih | nyata_ringan | nyata_berat |
 |:--|:--|:--|:--|:--|:--|:--|:--|:--|
@@ -106,7 +140,9 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | C2 | std 0.7 (N0=N1) | 85.3 ± 0.4 | 73.5 ± 0.7 | 52.4 ± 1.4 | 28.6 ± 2.2 | 85.6 ± 0.2 | 74.9 ± 1.4 | 58.4 ± 1.0 |
 | C2 | Soft-NMS 0.3 (N2) | 85.7 ± 0.4 | 74.3 ± 0.6 | 53.8 ± 1.4 | 29.8 ± 2.4 | 84.8 ± 0.3 | 72.1 ± 1.0 | 56.6 ± 0.9 |
 
-## 5. Ablasi bootstrap CI 95% (selisih terhadap C0 + NMS 0.7, skala 0–1; * = bermakna)
+### 5. Ablasi bootstrap CI 95%
+
+Selisih terhadap C0 + NMS 0.7, skala 0–1. Tanda * = bermakna.
 
 | perbandingan | L0 | L1 | L2 | L3 | nyata_bersih | nyata_ringan | nyata_berat |
 |:--|:--|:--|:--|:--|:--|:--|:--|
@@ -119,9 +155,9 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | Gabungan (C2 + IoU terbaik) | +0.002 [-0.004, +0.008] | +0.203 [+0.185, +0.222] * | +0.380 [+0.355, +0.409] * | +0.269 [+0.248, +0.296] * | +0.009 [-0.001, +0.017] | -0.004 [-0.018, +0.010] | +0.003 [-0.025, +0.024] |
 | Gabungan (C2 + Soft-NMS) | +0.006 [+0.001, +0.012] * | +0.211 [+0.193, +0.231] * | +0.394 [+0.368, +0.423] * | +0.281 [+0.260, +0.309] * | +0.001 [-0.009, +0.011] | -0.033 [-0.048, -0.018] * | -0.016 [-0.046, +0.008] |
 
-## 6. RQ3: transfer sintetis ke nyata
+### 6. RQ3: transfer sintetis ke nyata
 
-| perbandingan | Δ sintetis (L1-L3) | Δ nyata (ringan+berat) | arah sama | rasio transfer |
+| perbandingan | Δ sintetis (L1–L3) | Δ nyata (ringan+berat) | arah sama | rasio transfer |
 |:--|--:|--:|:--|:--|
 | NMS saja (IoU terbaik) | 0.0000 | 0.0000 | ya | - |
 | NMS saja (Soft-NMS) | 0.0051 | -0.0209 | tidak | -4.11 |
@@ -130,7 +166,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | Gabungan (C1 + Soft-NMS) | 0.0142 | -0.0127 | tidak | -0.89 |
 | Gabungan (C2 + Soft-NMS) | 0.2954 | -0.0243 | tidak | -0.08 |
 
-## 7. Uji generator silang (870 target sama, NMS 0.7)
+### 7. Uji generator silang (870 target sama, NMS 0.7)
 
 | generator | C0 | C1 | C2 | Δ C1 | Δ C2 | n_target |
 |:--|--:|--:|--:|--:|--:|--:|
@@ -150,7 +186,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | paste | L2 | 0.143 | 0.163 | 0.523 |
 | paste | L3 | 0.016 | 0.020 | 0.286 |
 
-## 8. Evaluasi semua motor dalam gambar
+### 8. Evaluasi semua motor dalam gambar
 
 | level | motor_lain | tersentuh >0% | diabaikan >10% | tertutup >50% |
 |:--|--:|--:|--:|--:|
@@ -173,7 +209,7 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | test_penuh | soft:0.3 | 0.896 | 0.900 | 0.899 |
 | test_penuh | std:0.7 | 0.900 | 0.903 | 0.902 |
 
-## 9. Cek penempatan penutup
+### 9. Cek penempatan penutup
 
 | set | generator | level | rentang | n | gagal_target | cov_min | cov_mean | cov_max | di_luar_rentang |
 |:--|:--|:--|:--|--:|--:|--:|--:|--:|--:|
@@ -190,11 +226,11 @@ Disusun dari output yang tersimpan di `mbc-collab_3.ipynb`. Semua angka disalin 
 | synthetic_test | gray | L2 | 0.40-0.60 | 906 | 4 | 0.4000 | 0.4749 | 0.5985 | 0 |
 | synthetic_test | gray | L3 | 0.60-0.80 | 874 | 36 | 0.6000 | 0.6701 | 0.7976 | 0 |
 
-Augmentasi training: penutup gagal ditempatkan 0/4827 kotak.
+Augmentasi training: penutup gagal ditempatkan pada 0 dari 4827 kotak.
 
-## 10. Panel C0 | C1 | C2 (hard NMS 0.7, seed 0) — jumlah per kategori
+### 10. Panel C0 | C1 | C2 (hard NMS 0.7, seed 0): jumlah per kategori
 
-Dari sel paket tim. Setiap set punya satu gambar panel berisi satu contoh acak (seed 0) per kategori, dengan gambar yang sama untuk C0, C1, C2.
+Diambil dari sel paket tim. Setiap set punya satu gambar panel berisi satu contoh acak (seed 0) per kategori. Gambar yang dipakai sama untuk C0, C1, dan C2.
 
 | set | semua berhasil | hanya C2 berhasil | C1 & C2 berhasil, C0 gagal | C0 berhasil, C2 gagal | semua gagal |
 |:--|--:|--:|--:|--:|--:|
@@ -206,9 +242,9 @@ Dari sel paket tim. Setiap set punya satu gambar panel berisi satu contoh acak (
 | nyata_ringan | 205 | 2 | 12 | 20 | 37 |
 | nyata_berat | 85 | 1 | 6 | 11 | 27 |
 
-## 11. Pemeriksaan label dengan penilai AI
+### 11. Pemeriksaan label dengan penilai AI
 
-- Label pembanding 150 motor (50 per tingkat menurut Kukuh) **diisi AI (Claude)**, tanpa melihat label Kukuh, memakai aturan yang sama; ditinjau Ali tanpa perubahan.
+- Label pembanding untuk 150 motor (50 per tingkat menurut Kukuh) **diisi AI (Claude)** dengan aturan yang sama, tanpa melihat label Kukuh. Ali meninjaunya tanpa mengubah apa pun.
 - Kesepakatan 50,7%, Cohen κ = 0,283, κ berbobot kuadratik 0,493, 74 label berbeda.
 - Ini **bukan** agreement antar-manusia. Label evaluasi tetap dari Kukuh.
 
@@ -219,7 +255,7 @@ Dari sel paket tim. Setiap set punya satu gambar panel berisi satu contoh acak (
 | ringan | 5 | 3 | 5 | 38 | 51 |
 | total | 25 | 24 | 11 | 90 | 150 |
 
-## 12. Ketahanan cahaya
+### 12. Ketahanan cahaya
 
 | cfg (400 citra uji, 2348 motor) | AP50 | AP50-95 | P | R | F1 |
 |:--|:--|:--|:--|:--|:--|
@@ -245,43 +281,25 @@ Dari sel paket tim. Setiap set punya satu gambar panel berisi satu contoh acak (
 | C1 | 0.952 |
 | C2 | 0.947 |
 
-## 13. Isi file hasil
+### 13. Isi file hasil
 
-- `SEMUA_HASIL_v6_e60_ulang.zip` (1023 MB): laporan, results, paket_akhir (12 best.pt + raw_preds + README), raw_preds, sampel penanda 2, log training
-- `PAKET_TIM_v6_e60_ulang.zip` (571 MB, 107 file): `weights/` 9 best.pt, `raw_preds/` (termasuk test_penuh), `matching.pkl`, `matching_semua_motor.pkl`, `gensilang_raw_preds/` + `target_gensilang.json`, `hasil_csv/`, `label/`, `log_training/`, `panel_C0_C1_C2_hardNMS07/` (7 PNG + daftar), `occlusion_lib.py`, `README.txt`, `MANIFEST_sha256.csv`
+- **`SEMUA_HASIL_v6_e60_ulang.zip`** (1023 MB): laporan, results, paket_akhir (12 best.pt + raw_preds + README), raw_preds, sampel penanda 2, log training.
+- **`PAKET_TIM_v6_e60_ulang.zip`** (571 MB, 107 file):
+  - `weights/`: 9 best.pt
+  - `raw_preds/` (termasuk test_penuh), `matching.pkl`, `matching_semua_motor.pkl`
+  - `gensilang_raw_preds/` + `target_gensilang.json`
+  - `hasil_csv/`, `label/`, `log_training/`
+  - `panel_C0_C1_C2_hardNMS07/` (7 PNG + daftar)
+  - `occlusion_lib.py`, `README.txt`, `MANIFEST_sha256.csv`
 
-## 14. Status catatan tim
+### 14. Status catatan tim
 
-- **9 best.pt:** ✅ ada di PAKET_TIM
-- **Prediksi mentah + test penuh + matching:** ✅ ada
-- **Prediksi generator silang + cara evaluasi:** ✅ ada (gensilang_raw_preds, README)
-- **Bukti satu run:** ✅ MANIFEST_sha256.csv
-- **Panel C0–C1–C2 hard NMS 0.7, berhasil + gagal:** ✅ 7 panel (L0–L3, nyata bersih/ringan/berat)
-- **Log 60 epoch lengkap:** ✅ 9 run, tanpa resume
-- **Label penanda manusia kedua:** ❌ tidak dilakukan; ditulis sebagai keterbatasan, pembanding AI dilaporkan terpisah
-
-## 15. Link dataset
-
-| Dataset | Link | Keterangan |
+| item | status | keterangan |
 |:--|:--|:--|
-| UVH-26 (Hugging Face) | https://huggingface.co/datasets/iisc-aim/UVH-26 | Dataset citra + anotasi; notebook memakai cabang `v1.0`, anotasi MV |
-| Dataset card UVH-26 v1.0 | https://huggingface.co/datasets/iisc-aim/UVH-26/blob/v1.0/README.md | Definisi kategori (Two-wheeler = kategori 8), lisensi CC BY 4.0 |
-| Paper UVH-26 (arXiv) | https://arxiv.org/abs/2511.02563 | Sharma et al., 2025, Indian Institute of Science |
-| Label oklusi nyata (Kaggle) | https://www.kaggle.com/datasets/alirahmanbayanaka/manual-penanda2 | `real_tags (1).csv` (label Kukuh) + `label_penanda2 (1).csv` (pembanding AI). Hanya bisa dibuka orang lain bila dataset di-set Public atau dibagikan |
-
-## Data
-
-- UVH-26: https://huggingface.co/datasets/iisc-aim/UVH-26 (branch `v1.0`, majority-vote annotations, CC BY 4.0)
-- Dataset card: https://huggingface.co/datasets/iisc-aim/UVH-26/blob/v1.0/README.md
-- UVH-26 paper: https://arxiv.org/abs/2511.02563
-- The class used is Two-wheeler (category 8: motorcycles and seated motor scooters with rider). Standing kick-scooters are not part of this class.
-
-## Not in this repository
-
-Model checkpoints (`best.pt`), raw predictions, matching files and comparison panels are large. They are produced by the final run in `PAKET_TIM_v6_e60_ulang.zip` (571 MB) and should be shared through GitHub Releases, Git LFS or a Kaggle dataset.
-
-## Limitations
-
-Natural-occlusion labels come from one human annotator. The 150-target comparison (κ = 0.283) was rated by an AI model and is not human inter-annotator agreement. Results cover one detector, one city, daytime images and targets of 32 px and larger.
-
-
+| 9 best.pt | ✅ | ada di PAKET_TIM |
+| Prediksi mentah + test penuh + matching | ✅ | ada |
+| Prediksi generator silang + cara evaluasi | ✅ | gensilang_raw_preds, README |
+| Bukti satu run | ✅ | MANIFEST_sha256.csv |
+| Panel C0–C1–C2 hard NMS 0.7 (berhasil + gagal) | ✅ | 7 panel (L0–L3, nyata bersih/ringan/berat) |
+| Log 60 epoch lengkap | ✅ | 9 run, tanpa resume |
+| Label penanda manusia kedua | ❌ | tidak dilakukan; ditulis sebagai keterbatasan, pembanding AI dilaporkan terpisah |
