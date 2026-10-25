@@ -1,0 +1,5 @@
+set,semua berhasil,hanya C2 berhasil (C0 & C1 gagal),"C1 & C2 berhasil, C0 gagal","C0 berhasil, C2 gagal",semua gagal,cek: C2 berhasil & C0 gagal (definisi lama)
+L2 sintetis,132,348,59,9,313,407
+L3 sintetis,18,308,22,5,550,330
+nyata ringan,205,2,12,20,37,14
+nyata berat,85,1,6,11,27,7

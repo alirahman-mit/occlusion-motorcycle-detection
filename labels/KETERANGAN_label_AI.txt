@@ -1,0 +1,17 @@
+label_pembanding_AI_claude.csv
+- Penilai : AI (Claude), BUKAN penanda manusia.
+- Sampel  : 150 target (50 bersih / 50 ringan / 50 berat menurut Kukuh), diambil acak oleh sel 12d (seed tetap).
+- Kondisi : AI tidak melihat label Kukuh; memakai aturan_penandaan.json yang sama. Ditinjau oleh Ali tanpa perubahan.
+- Hasil (sel 12e, run Kaggle mbc-collab): kesepakatan 50,7%, Cohen kappa 0,283, kappa berbobot kuadratik 0,493, 74 label berbeda.
+- Tabel silang (baris Kukuh, kolom AI):
+              berat  bersih  buang  ringan  total
+    berat        20       3      2      24     49
+    bersih        0      18      4      28     50
+    ringan        5       3      5      38     51
+    total        25      24     11      90    150
+- Label evaluasi paper tetap dari Kukuh. Penanda manusia kedua yang independen belum dilakukan.
+
+Kalimat untuk paper:
+"A stratified sample of 150 targets (50 per category) was re-rated by an AI model (Claude) blind to the
+original labels and reviewed by a team member; agreement with the primary annotator was kappa = 0.283
+(50.7%). No independent human second annotation was performed."

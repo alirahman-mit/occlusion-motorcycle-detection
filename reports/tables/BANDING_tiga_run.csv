@@ -1,0 +1,9 @@
+Hal,"RUN ULANG (ini, mbc-collab)",Run paper (mbc-final-keterima),Run Colab lama (v6_2_colab_e60)
+Lingkungan,"Kaggle T4, torch 2.11+cu128","Kaggle T4, torch 2.11+cu128","Colab T4, torch 2.11+cu130"
+Training,"9 run sekali jalan, tanpa resume","9 run sekali jalan, tanpa resume","beberapa sesi, resume dari last.pt"
+Log epoch (results.csv),60 baris x 9 run,60 baris x 9 run,C0_s0 & C0_s2 hanya 58 baris
+C2 AP50 L1 / L2 / L3,73.5 / 52.4 / 28.6,73.5 / 52.4 / 28.6,72.2 / 50.9 / 27.7
+C0 AP50 nyata ringan / berat,75.4 / 58.2,75.4 / 58.2,75.9 / 57.4
+C1 - C0 di L2,"+1.9 [0.9, 3.0] *","+1.9 [0.9, 3.0] *","-1.9 [-2.8, -0.6] *"
+Generator silang C2-C0 (paste/erase/gray),+0.284 / +0.279 / +0.245,+0.284 / +0.279 / +0.245,+0.261 / +0.254 / +0.230
+Kappa penanda ke-2,0.283,0.283,0.283

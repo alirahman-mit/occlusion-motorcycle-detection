@@ -1,0 +1,13 @@
+set,generator,level,rentang,n,gagal_target,cov_min,cov_mean,cov_max,di_luar_rentang
+synthetic_test,paste,L1,0.20-0.40,910,14,0.2,0.2827,0.3995,0
+synthetic_test,paste,L2,0.40-0.60,910,14,0.4001,0.4841,0.5992,0
+synthetic_test,paste,L3,0.60-0.80,910,14,0.6,0.6776,0.8,0
+synthetic_val,paste,L1,0.20-0.40,355,5,0.2003,0.28,0.397,0
+synthetic_val,paste,L2,0.40-0.60,355,5,0.4021,0.4799,0.5999,0
+synthetic_val,paste,L3,0.60-0.80,355,5,0.6003,0.6749,0.8,0
+synthetic_test,erase,L1,0.20-0.40,910,0,0.2,0.2821,0.3999,0
+synthetic_test,erase,L2,0.40-0.60,906,4,0.4,0.4749,0.5985,0
+synthetic_test,erase,L3,0.60-0.80,874,36,0.6,0.6701,0.7976,0
+synthetic_test,gray,L1,0.20-0.40,910,0,0.2,0.2821,0.3999,0
+synthetic_test,gray,L2,0.40-0.60,906,4,0.4,0.4749,0.5985,0
+synthetic_test,gray,L3,0.60-0.80,874,36,0.6,0.6701,0.7976,0

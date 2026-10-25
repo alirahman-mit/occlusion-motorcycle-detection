@@ -1,0 +1,17 @@
+# hasil besar: simpan di Kaggle Output / GitHub Releases, bukan di repo
+*.pt
+*.pth
+*.zip
+*.pkl
+data*/
+runs*/
+results*/
+raw_preds*/
+weights/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+# kunci pribadi
+kaggle.json
+access_token
+.env

@@ -1,0 +1,7 @@
+perbandingan,Δ sintetis (L1-L3),Δ nyata (ringan+berat),arah sama,rasio transfer
+NMS saja (IoU terbaik),0.0,0.0,ya,-
+NMS saja (Soft-NMS),0.0051,-0.0209,tidak,-4.11
+Augmentasi saja (C1),0.0092,0.011,ya,1.19
+Augmentasi saja (C2),0.2841,-0.0009,tidak,-0.003
+Gabungan (C1 + Soft-NMS),0.0142,-0.0127,tidak,-0.89
+Gabungan (C2 + Soft-NMS),0.2954,-0.0243,tidak,-0.08

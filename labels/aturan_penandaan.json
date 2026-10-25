@@ -1,0 +1,11 @@
+{
+  "objek": "Motor/skuter BESERTA pengendaranya di dalam kotak kuning (definisi Two-wheeler UVH-26). Abaikan motor lain.",
+  "bersih": "Hampir tidak ada yang menutup motor maupun pengendara (bagian tertutup kira-kira < 10%).",
+  "ringan": "Ada yang menutup, tetapi separuh atau lebih dari motor + pengendara masih terlihat.",
+  "berat": "Lebih dari separuh motor + pengendara tidak terlihat.",
+  "buang": "Kotak salah, bukan motor, terlalu kecil/buram untuk dinilai, atau penanda ragu. Tulis alasan di catatan.",
+  "petunjuk": "Gunakan roda, rangka, posisi pengendara, dan konteks. Bagian yang terpotong tepi gambar TIDAK dihitung sebagai tertutup; tulis 'terpotong' di catatan.",
+  "penutup": "kendaraan = kendaraan lain (termasuk motor lain); objek_diam = tiang, pohon, pagar, papan; lain = orang, barang, dll.; '-' bila bersih.",
+  "kotak_ok": "Hilangkan centang bila kotak kuning TIDAK mencakup seluruh motor + pengendara termasuk bagian yang tertutup (motor itu lalu tidak dievaluasi).",
+  "independen": "Jangan melihat atau mendiskusikan label penanda lain sebelum kedua penanda selesai."
+}

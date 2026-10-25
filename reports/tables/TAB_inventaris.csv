@@ -1,0 +1,4 @@
+split,n_img,n_motor
+train,2550,15323
+val,450,2703
+test,1150,6729
